@@ -22,7 +22,12 @@ import yt_dlp
 # App setup
 # ---------------------------------------------------------------------------
 
-app = Flask(__name__, static_folder="static", static_url_path="/static")
+# Auto-detect whether frontend files are in a "static/" subfolder or at root.
+# (GitHub upload sometimes flattens folder structure.)
+_app_dir = os.path.dirname(os.path.abspath(__file__))
+_static_dir = "static" if os.path.isdir(os.path.join(_app_dir, "static")) else "."
+
+app = Flask(__name__, static_folder=_static_dir, static_url_path="/static")
 CORS(app)
 
 DOWNLOAD_DIR = Path(os.environ.get("DOWNLOAD_DIR", "/tmp/vyral_downloads"))
@@ -163,7 +168,7 @@ def process_job(job_id: str):
 
 @app.route("/")
 def index():
-    return send_from_directory("static", "index.html")
+    return send_from_directory(_static_dir, "index.html")
 
 
 @app.route("/api/download", methods=["POST"])
@@ -256,5 +261,5 @@ def download_zip(job_id):
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
-    print(f"🚀 Vyral Labs TikTok Downloader running on http://localhost:{port}")
+    print(f"Vyral Labs TikTok Downloader running on http://localhost:{port}")
     app.run(host="0.0.0.0", port=port, debug=True)
