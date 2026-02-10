@@ -1,0 +1,409 @@
+/* ============================================================
+   Vyral Labs — TikTok Downloader  |  Styles
+   ============================================================ */
+
+:root {
+    --bg:             #09090b;
+    --card:           #18181b;
+    --card-border:    #27272a;
+    --input-bg:       #0f0f12;
+    --accent:         #8b5cf6;
+    --accent-hover:   #a78bfa;
+    --accent-glow:    rgba(139, 92, 246, .25);
+    --success:        #22c55e;
+    --success-bg:     rgba(34, 197, 94, .1);
+    --error:          #ef4444;
+    --error-bg:       rgba(239, 68, 68, .08);
+    --warning:        #eab308;
+    --text:           #fafafa;
+    --text-secondary: #a1a1aa;
+    --text-dim:       #52525b;
+    --radius:         12px;
+    --radius-sm:      8px;
+}
+
+/* ---- Reset & base ---- */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ---- Header ---- */
+
+header {
+    padding: 0.5rem 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* ---- Cards ---- */
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+/* ---- Input section ---- */
+
+.input-section label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+
+.label-hint {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+textarea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--input-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    padding: 1rem;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+textarea::placeholder {
+    color: var(--text-dim);
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+}
+
+.url-count {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* ---- Buttons ---- */
+
+button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+    padding: 0.65rem 1.25rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--card-border);
+}
+
+.btn-ghost:hover {
+    background: var(--card-border);
+    color: var(--text);
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.btn-success:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(34, 197, 94, .25);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--card-border);
+    font-size: 0.85rem;
+}
+
+.btn-outline:hover {
+    border-color: var(--text-secondary);
+    color: var(--text);
+}
+
+/* ---- Error banner ---- */
+
+.error-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--error-bg);
+    border: 1px solid rgba(239, 68, 68, .3);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    color: var(--error);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.error-banner svg { flex-shrink: 0; }
+
+.error-banner span { flex: 1; }
+
+.error-close {
+    background: none;
+    border: none;
+    color: var(--error);
+    font-size: 1.25rem;
+    padding: 0 0.25rem;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.error-close:hover { opacity: 1; }
+
+/* ---- Progress section ---- */
+
+.progress-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.progress-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.progress-summary {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Overall bar */
+
+.progress-bar-track {
+    width: 100%;
+    height: 6px;
+    background: var(--card-border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+/* Video list */
+
+.video-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.video-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    transition: background 0.15s;
+}
+
+.video-item:hover {
+    background: rgba(255,255,255,.02);
+}
+
+.status-icon {
+    flex-shrink: 0;
+    width: 22px;
+    text-align: center;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.video-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.video-url {
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.78rem;
+}
+
+.video-username {
+    color: var(--accent);
+    font-weight: 500;
+    font-size: 0.78rem;
+}
+
+.error-msg {
+    color: var(--error);
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+/* Downloading animation */
+.video-item.downloading .status-icon {
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* ---- ZIP download section ---- */
+
+.zip-section {
+    text-align: center;
+    padding-top: 1.25rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--card-border);
+}
+
+.zip-hint {
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+}
+
+.retry-section {
+    text-align: center;
+    margin-top: 0.75rem;
+}
+
+/* ---- Footer ---- */
+
+footer {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+footer p {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+/* ---- Utility ---- */
+
+.hidden { display: none !important; }
+
+/* Scrollbar */
+.video-list::-webkit-scrollbar { width: 6px; }
+.video-list::-webkit-scrollbar-track { background: transparent; }
+.video-list::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 3px; }
+
+/* ---- Responsive ---- */
+
+@media (max-width: 520px) {
+    body { padding: 1rem 0.5rem; }
+    .card { padding: 1rem; }
+    .input-footer { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+    .btn-group { justify-content: flex-end; }
+    .progress-header { flex-direction: column; gap: 0.25rem; }
+}

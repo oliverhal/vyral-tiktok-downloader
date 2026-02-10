@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vyral Labs — TikTok Downloader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <rect width="32" height="32" rx="8" fill="#8b5cf6"/>
+                    <path d="M10 22V10l14 6-14 6z" fill="white"/>
+                </svg>
+                <div>
+                    <h1>Vyral Labs</h1>
+                    <p class="subtitle">TikTok Video Downloader</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <main>
+
+            <!-- URL input section -->
+            <section class="card input-section">
+                <label for="urls">Paste TikTok URLs below <span class="label-hint">(one per line, or comma-separated)</span></label>
+                <textarea
+                    id="urls"
+                    rows="8"
+                    placeholder="https://www.tiktok.com/@foodie_adventures/video/7234567890123456789&#10;https://www.tiktok.com/@travel_hacks/video/7345678901234567890&#10;https://vm.tiktok.com/ZMeXXXXXX/"
+                    spellcheck="false"
+                ></textarea>
+                <div class="input-footer">
+                    <span id="url-count" class="url-count">0 URLs</span>
+                    <div class="btn-group">
+                        <button id="clear-btn" class="btn-ghost" title="Clear all URLs">Clear</button>
+                        <button id="download-btn" class="btn-primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Download All
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error banner -->
+            <div id="error-banner" class="error-banner hidden">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <span id="error-text"></span>
+                <button id="error-close" class="error-close">&times;</button>
+            </div>
+
+            <!-- Progress section -->
+            <section id="progress-section" class="card progress-section hidden">
+                <div class="progress-header">
+                    <h2>Download Progress</h2>
+                    <span id="progress-summary" class="progress-summary"></span>
+                </div>
+
+                <!-- Overall progress bar -->
+                <div class="progress-bar-track">
+                    <div id="progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+
+                <!-- Individual video list -->
+                <div id="video-list" class="video-list"></div>
+
+                <!-- Download ZIP button -->
+                <div id="zip-section" class="zip-section hidden">
+                    <button id="zip-btn" class="btn-success">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download ZIP
+                    </button>
+                    <p class="zip-hint">Videos are organised into folders by creator username.</p>
+                </div>
+
+                <!-- Retry failed -->
+                <div id="retry-section" class="retry-section hidden">
+                    <button id="retry-btn" class="btn-outline">
+                        Retry Failed URLs
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>Vyral Labs &mdash; Internal Tool &middot; Not for public distribution</p>
+        </footer>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
