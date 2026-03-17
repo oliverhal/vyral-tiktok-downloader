@@ -375,6 +375,72 @@ button {
     margin-top: 0.75rem;
 }
 
+/* ---- Report table ---- */
+
+.report-section { overflow: hidden; }
+
+.report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+}
+
+.report-header h2 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.report-hint {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+}
+
+.report-table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+}
+
+#report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+#report-table th {
+    background: var(--input-bg);
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    padding: 0.6rem 0.85rem;
+    text-align: left;
+    border-bottom: 1px solid var(--card-border);
+    white-space: nowrap;
+}
+
+#report-table td {
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--card-border);
+    vertical-align: top;
+    color: var(--text);
+    line-height: 1.5;
+}
+
+#report-table tbody tr:last-child td { border-bottom: none; }
+
+#report-table tbody tr:hover td { background: rgba(255,255,255,.02); }
+
+.col-username { white-space: nowrap; color: var(--accent) !important; font-weight: 500; }
+.col-caption  { max-width: 260px; }
+.col-url a    { color: var(--text-secondary); text-decoration: none; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.75rem; }
+.col-url a:hover { color: var(--accent); }
+.col-views    { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.col-date     { white-space: nowrap; color: var(--text-secondary); }
+
 /* ---- Footer ---- */
 
 footer {

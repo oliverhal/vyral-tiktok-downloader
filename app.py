@@ -4,6 +4,8 @@ Backend server: accepts TikTok URLs, downloads HD videos without watermark,
 organises by creator username, and serves a ZIP file.
 """
 
+import csv
+import io
 import os
 import re
 import uuid
@@ -138,6 +140,9 @@ def process_job(job_id: str):
 
             video["status"] = "done"
             video["username"] = username
+            video["caption"] = (info.get("description") or info.get("title") or "")[:500]
+            video["views"] = info.get("view_count")
+            video["upload_date"] = info.get("upload_date") or ""  # YYYYMMDD
 
         except Exception as exc:
             video["status"] = "failed"
@@ -154,6 +159,31 @@ def process_job(job_id: str):
                     full = os.path.join(root, fname)
                     arcname = os.path.relpath(full, str(job_dir))
                     zf.write(full, arcname)
+
+            # Write report.csv into the ZIP
+            buf = io.StringIO()
+            writer = csv.DictWriter(
+                buf,
+                fieldnames=["Username", "Caption", "URL", "Views", "Date"],
+                lineterminator="\r\n",
+            )
+            writer.writeheader()
+            for v in job["videos"]:
+                if v["status"] == "done":
+                    raw_date = v.get("upload_date") or ""
+                    date_str = (
+                        f"{raw_date[:4]}-{raw_date[4:6]}-{raw_date[6:]}"
+                        if len(raw_date) == 8
+                        else raw_date
+                    )
+                    writer.writerow({
+                        "Username": f"@{v.get('username', '')}",
+                        "Caption": v.get("caption", ""),
+                        "URL": v["url"],
+                        "Views": v.get("views") if v.get("views") is not None else "",
+                        "Date": date_str,
+                    })
+            zf.writestr("report.csv", buf.getvalue())
         job["zip_path"] = str(zip_path)
 
     # clean up the unzipped folder
