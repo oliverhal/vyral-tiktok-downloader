@@ -100,6 +100,34 @@
 
         </main>
 
+        <!-- Report table -->
+        <section id="report-section" class="card report-section hidden">
+            <div class="report-header">
+                <h2>Report</h2>
+                <button id="copy-btn" class="btn-ghost">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    Copy table
+                </button>
+            </div>
+            <p class="report-hint">Paste directly into Google Sheets, Excel, or your bi-weekly report.</p>
+            <div class="report-table-wrap">
+                <table id="report-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Caption</th>
+                            <th>URL</th>
+                            <th>Views</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-body"></tbody>
+                </table>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer>
             <p>Vyral Labs &mdash; Internal Tool &middot; Not for public distribution</p>

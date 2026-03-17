@@ -20,6 +20,9 @@ const zipSection     = document.getElementById("zip-section");
 const zipBtn         = document.getElementById("zip-btn");
 const retrySection   = document.getElementById("retry-section");
 const retryBtn       = document.getElementById("retry-btn");
+const reportSection  = document.getElementById("report-section");
+const reportBody     = document.getElementById("report-body");
+const copyBtn        = document.getElementById("copy-btn");
 
 let currentJobId = null;
 let pollTimer    = null;
@@ -46,6 +49,18 @@ function showError(msg) {
 
 function hideError() {
     errorBanner.classList.add("hidden");
+}
+
+function formatViews(n) {
+    if (n == null) return "—";
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + "M";
+    if (n >= 1_000) return (n / 1_000).toFixed(1) + "K";
+    return n.toLocaleString();
+}
+
+function formatDate(d) {
+    if (!d || d.length !== 8) return d || "—";
+    return `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}`;
 }
 
 // Status icons
@@ -119,10 +134,12 @@ downloadBtn.addEventListener("click", async () => {
 
         currentJobId = data.job_id;
 
-        // Show progress section, hide zip/retry
+        // Show progress section, hide zip/retry/report
         progressSec.classList.remove("hidden");
         zipSection.classList.add("hidden");
         retrySection.classList.add("hidden");
+        reportSection.classList.add("hidden");
+        reportBody.innerHTML = "";
 
         startPolling();
 
@@ -166,6 +183,12 @@ async function checkStatus() {
             const failed = data.videos.filter(v => v.status === "failed");
             if (failed.length > 0) {
                 retrySection.classList.remove("hidden");
+            }
+
+            // Render report table for successful downloads
+            const done = data.videos.filter(v => v.status === "done");
+            if (done.length > 0) {
+                renderReport(done);
             }
         }
     } catch (err) {
@@ -216,6 +239,51 @@ function renderProgress(data) {
             </div>`;
     }).join("");
 }
+
+// ============================================================
+// Report table
+// ============================================================
+
+function renderReport(videos) {
+    reportBody.innerHTML = videos.map(v => {
+        const username = v.username ? `@${v.username}` : "—";
+        const caption  = v.caption  || "—";
+        const views    = formatViews(v.views);
+        const date     = formatDate(v.upload_date);
+        return `
+            <tr>
+                <td class="col-username">${username}</td>
+                <td class="col-caption">${caption}</td>
+                <td class="col-url"><a href="${v.url}" target="_blank" rel="noopener">${truncate(v.url, 45)}</a></td>
+                <td class="col-views">${views}</td>
+                <td class="col-date">${date}</td>
+            </tr>`;
+    }).join("");
+
+    reportSection.classList.remove("hidden");
+}
+
+copyBtn.addEventListener("click", () => {
+    const rows = [["Username", "Caption", "URL", "Views", "Date"]];
+    reportBody.querySelectorAll("tr").forEach(tr => {
+        const cells = tr.querySelectorAll("td");
+        // For URL cell, get the href rather than truncated display text
+        const url = cells[2]?.querySelector("a")?.href || cells[2]?.textContent || "";
+        rows.push([
+            cells[0]?.textContent || "",
+            cells[1]?.textContent || "",
+            url,
+            cells[3]?.textContent || "",
+            cells[4]?.textContent || "",
+        ]);
+    });
+    const tsv = rows.map(r => r.join("\t")).join("\n");
+    navigator.clipboard.writeText(tsv).then(() => {
+        const orig = copyBtn.innerHTML;
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => { copyBtn.innerHTML = orig; }, 2000);
+    });
+});
 
 // ============================================================
 // Download ZIP
