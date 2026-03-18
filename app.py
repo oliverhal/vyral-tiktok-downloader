@@ -142,6 +142,9 @@ def process_job(job_id: str):
             video["username"] = username
             video["caption"] = (info.get("description") or info.get("title") or "")[:500]
             video["views"] = info.get("view_count")
+            video["comments"] = info.get("comment_count")
+            video["reposts"] = info.get("repost_count")
+            video["duration"] = info.get("duration")  # seconds
             video["upload_date"] = info.get("upload_date") or ""  # YYYYMMDD
 
         except Exception as exc:
@@ -164,7 +167,7 @@ def process_job(job_id: str):
             buf = io.StringIO()
             writer = csv.DictWriter(
                 buf,
-                fieldnames=["Username", "Caption", "URL", "Views", "Date"],
+                fieldnames=["Username", "Caption", "URL", "Views", "Comments", "Reposts", "Duration (s)", "Date"],
                 lineterminator="\r\n",
             )
             writer.writeheader()
@@ -181,6 +184,9 @@ def process_job(job_id: str):
                         "Caption": v.get("caption", ""),
                         "URL": v["url"],
                         "Views": v.get("views") if v.get("views") is not None else "",
+                        "Comments": v.get("comments") if v.get("comments") is not None else "",
+                        "Reposts": v.get("reposts") if v.get("reposts") is not None else "",
+                        "Duration (s)": v.get("duration") if v.get("duration") is not None else "",
                         "Date": date_str,
                     })
             zf.writestr("report.csv", buf.getvalue())
@@ -214,15 +220,15 @@ def start_download():
     urls = []
     for url in raw_urls:
         url = url.strip()
-        if url and "tiktok.com" in url:
+        if url and ("tiktok.com" in url or "instagram.com" in url):
             urls.append(url)
 
     if not urls:
         return (
             jsonify(
                 {
-                    "error": "No valid TikTok URLs found. "
-                    "Make sure each URL contains tiktok.com."
+                    "error": "No valid URLs found. "
+                    "Make sure each URL contains tiktok.com or instagram.com."
                 }
             ),
             400,
