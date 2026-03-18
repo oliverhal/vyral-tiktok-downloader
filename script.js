@@ -35,7 +35,7 @@ function parseUrls(text) {
     return text
         .split(/[\n,]+/)
         .map(u => u.trim())
-        .filter(u => u.length > 0 && u.includes("tiktok.com"));
+        .filter(u => u.length > 0 && (u.includes("tiktok.com") || u.includes("instagram.com")));
 }
 
 function truncate(str, max = 65) {
@@ -106,7 +106,7 @@ downloadBtn.addEventListener("click", async () => {
     const urls = parseUrls(urlsInput.value);
 
     if (urls.length === 0) {
-        showError("Paste at least one TikTok URL to get started.");
+        showError("Paste at least one TikTok or Instagram URL to get started.");
         return;
     }
 
@@ -244,11 +244,21 @@ function renderProgress(data) {
 // Report table
 // ============================================================
 
+function formatDuration(secs) {
+    if (secs == null) return "—";
+    const m = Math.floor(secs / 60);
+    const s = Math.round(secs % 60);
+    return `${m}:${String(s).padStart(2, "0")}`;
+}
+
 function renderReport(videos) {
     reportBody.innerHTML = videos.map(v => {
         const username = v.username ? `@${v.username}` : "—";
         const caption  = v.caption  || "—";
         const views    = formatViews(v.views);
+        const comments = formatViews(v.comments);
+        const reposts  = formatViews(v.reposts);
+        const duration = formatDuration(v.duration);
         const date     = formatDate(v.upload_date);
         return `
             <tr>
@@ -256,6 +266,9 @@ function renderReport(videos) {
                 <td class="col-caption">${caption}</td>
                 <td class="col-url"><a href="${v.url}" target="_blank" rel="noopener">${truncate(v.url, 45)}</a></td>
                 <td class="col-views">${views}</td>
+                <td class="col-views">${comments}</td>
+                <td class="col-views">${reposts}</td>
+                <td class="col-views">${duration}</td>
                 <td class="col-date">${date}</td>
             </tr>`;
     }).join("");
@@ -264,10 +277,9 @@ function renderReport(videos) {
 }
 
 copyBtn.addEventListener("click", () => {
-    const rows = [["Username", "Caption", "URL", "Views", "Date"]];
+    const rows = [["Username", "Caption", "URL", "Views", "Comments", "Reposts", "Duration", "Date"]];
     reportBody.querySelectorAll("tr").forEach(tr => {
         const cells = tr.querySelectorAll("td");
-        // For URL cell, get the href rather than truncated display text
         const url = cells[2]?.querySelector("a")?.href || cells[2]?.textContent || "";
         rows.push([
             cells[0]?.textContent || "",
@@ -275,6 +287,9 @@ copyBtn.addEventListener("click", () => {
             url,
             cells[3]?.textContent || "",
             cells[4]?.textContent || "",
+            cells[5]?.textContent || "",
+            cells[6]?.textContent || "",
+            cells[7]?.textContent || "",
         ]);
     });
     const tsv = rows.map(r => r.join("\t")).join("\n");
