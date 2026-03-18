@@ -141,7 +141,7 @@ def process_job(job_id: str):
             video["status"] = "done"
             video["username"] = username
             video["caption"] = (info.get("description") or info.get("title") or "")[:500]
-            video["views"] = info.get("view_count")
+            video["views"] = info.get("view_count") or info.get("play_count")
             video["comments"] = info.get("comment_count")
             video["reposts"] = info.get("repost_count")
             video["duration"] = info.get("duration")  # seconds
