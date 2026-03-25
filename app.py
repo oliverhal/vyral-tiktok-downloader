@@ -36,8 +36,20 @@ DOWNLOAD_DIR = Path(os.environ.get("DOWNLOAD_DIR", "/tmp/vyral_downloads"))
 DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 MAX_VIDEOS = int(os.environ.get("MAX_VIDEOS_PER_BATCH", 50))
-INSTAGRAM_COOKIES_FILE = os.environ.get("INSTAGRAM_COOKIES_FILE", "")
 JOB_EXPIRY_HOURS = 2
+
+# Instagram cookies: prefer a file path, fall back to raw cookie content in env var.
+# On Railway (no persistent filesystem), set INSTAGRAM_COOKIES to the contents of
+# your cookies.txt file and leave INSTAGRAM_COOKIES_FILE unset.
+_INSTAGRAM_COOKIES_FILE = os.environ.get("INSTAGRAM_COOKIES_FILE", "")
+_INSTAGRAM_COOKIES_CONTENT = os.environ.get("INSTAGRAM_COOKIES", "")
+
+if not _INSTAGRAM_COOKIES_FILE and _INSTAGRAM_COOKIES_CONTENT:
+    _cookie_tmp = Path("/tmp/instagram_cookies.txt")
+    _cookie_tmp.write_text(_INSTAGRAM_COOKIES_CONTENT)
+    _INSTAGRAM_COOKIES_FILE = str(_cookie_tmp)
+
+INSTAGRAM_COOKIES_FILE = _INSTAGRAM_COOKIES_FILE
 
 # In-memory job store (fine for MVP — no database needed)
 jobs: dict = {}
