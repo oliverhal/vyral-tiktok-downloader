@@ -296,6 +296,22 @@ def get_status(job_id):
     )
 
 
+@app.route("/api/debug")
+def debug():
+    cookie_file = INSTAGRAM_COOKIES_FILE
+    cookie_file_exists = bool(cookie_file and os.path.exists(cookie_file))
+    cookie_file_size = os.path.getsize(cookie_file) if cookie_file_exists else 0
+    cookie_env_set = bool(os.environ.get("INSTAGRAM_COOKIES", ""))
+    cookie_file_env_set = bool(os.environ.get("INSTAGRAM_COOKIES_FILE", ""))
+    return jsonify({
+        "cookie_file_path": cookie_file or None,
+        "cookie_file_exists": cookie_file_exists,
+        "cookie_file_size_bytes": cookie_file_size,
+        "INSTAGRAM_COOKIES_env_set": cookie_env_set,
+        "INSTAGRAM_COOKIES_FILE_env_set": cookie_file_env_set,
+    })
+
+
 @app.route("/api/download-zip/<job_id>")
 def download_zip(job_id):
     with jobs_lock:
