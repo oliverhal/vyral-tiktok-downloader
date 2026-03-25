@@ -36,6 +36,7 @@ DOWNLOAD_DIR = Path(os.environ.get("DOWNLOAD_DIR", "/tmp/vyral_downloads"))
 DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 MAX_VIDEOS = int(os.environ.get("MAX_VIDEOS_PER_BATCH", 50))
+INSTAGRAM_COOKIES_FILE = os.environ.get("INSTAGRAM_COOKIES_FILE", "")
 JOB_EXPIRY_HOURS = 2
 
 # In-memory job store (fine for MVP — no database needed)
@@ -100,7 +101,11 @@ def process_job(job_id: str):
 
         try:
             # --- Step 1: extract metadata ---------------------------------
-            with yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True}) as ydl:
+            base_opts: dict = {"quiet": True, "no_warnings": True}
+            if "instagram.com" in url and INSTAGRAM_COOKIES_FILE and os.path.exists(INSTAGRAM_COOKIES_FILE):
+                base_opts["cookiefile"] = INSTAGRAM_COOKIES_FILE
+
+            with yt_dlp.YoutubeDL(base_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
 
             username = (
@@ -134,6 +139,8 @@ def process_job(job_id: str):
                 "socket_timeout": 30,
                 "retries": 3,
             }
+            if "instagram.com" in url and INSTAGRAM_COOKIES_FILE and os.path.exists(INSTAGRAM_COOKIES_FILE):
+                ydl_opts["cookiefile"] = INSTAGRAM_COOKIES_FILE
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
