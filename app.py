@@ -38,6 +38,19 @@ DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 MAX_VIDEOS = int(os.environ.get("MAX_VIDEOS_PER_BATCH", 50))
 JOB_EXPIRY_HOURS = 2
 
+# Instagram cookies: prefer a file path, fall back to raw cookie content in env var.
+# On Railway (no persistent filesystem), set INSTAGRAM_COOKIES to the contents of
+# your cookies.txt file and leave INSTAGRAM_COOKIES_FILE unset.
+_INSTAGRAM_COOKIES_FILE = os.environ.get("INSTAGRAM_COOKIES_FILE", "")
+_INSTAGRAM_COOKIES_CONTENT = os.environ.get("INSTAGRAM_COOKIES", "")
+
+if not _INSTAGRAM_COOKIES_FILE and _INSTAGRAM_COOKIES_CONTENT:
+    _cookie_tmp = Path("/tmp/instagram_cookies.txt")
+    _cookie_tmp.write_text(_INSTAGRAM_COOKIES_CONTENT)
+    _INSTAGRAM_COOKIES_FILE = str(_cookie_tmp)
+
+INSTAGRAM_COOKIES_FILE = _INSTAGRAM_COOKIES_FILE
+
 # In-memory job store (fine for MVP — no database needed)
 jobs: dict = {}
 jobs_lock = threading.Lock()
@@ -100,7 +113,11 @@ def process_job(job_id: str):
 
         try:
             # --- Step 1: extract metadata ---------------------------------
-            with yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True}) as ydl:
+            base_opts: dict = {"quiet": True, "no_warnings": True}
+            if "instagram.com" in url and INSTAGRAM_COOKIES_FILE and os.path.exists(INSTAGRAM_COOKIES_FILE):
+                base_opts["cookiefile"] = INSTAGRAM_COOKIES_FILE
+
+            with yt_dlp.YoutubeDL(base_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
 
             username = (
@@ -134,6 +151,8 @@ def process_job(job_id: str):
                 "socket_timeout": 30,
                 "retries": 3,
             }
+            if "instagram.com" in url and INSTAGRAM_COOKIES_FILE and os.path.exists(INSTAGRAM_COOKIES_FILE):
+                ydl_opts["cookiefile"] = INSTAGRAM_COOKIES_FILE
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
@@ -220,7 +239,7 @@ def start_download():
     urls = []
     for url in raw_urls:
         url = url.strip()
-        if url and ("tiktok.com" in url or "instagram.com" in url):
+        if url and ("tiktok.com" in url or "instagram.com" in url or "youtube.com/shorts" in url or "youtu.be" in url):
             urls.append(url)
 
     if not urls:
@@ -228,7 +247,7 @@ def start_download():
             jsonify(
                 {
                     "error": "No valid URLs found. "
-                    "Make sure each URL contains tiktok.com or instagram.com."
+                    "Make sure each URL contains tiktok.com, instagram.com, or youtube.com/shorts."
                 }
             ),
             400,
@@ -275,6 +294,22 @@ def get_status(job_id):
             "zip_ready": job["zip_path"] is not None,
         }
     )
+
+
+@app.route("/api/debug")
+def debug():
+    cookie_file = INSTAGRAM_COOKIES_FILE
+    cookie_file_exists = bool(cookie_file and os.path.exists(cookie_file))
+    cookie_file_size = os.path.getsize(cookie_file) if cookie_file_exists else 0
+    cookie_env_set = bool(os.environ.get("INSTAGRAM_COOKIES", ""))
+    cookie_file_env_set = bool(os.environ.get("INSTAGRAM_COOKIES_FILE", ""))
+    return jsonify({
+        "cookie_file_path": cookie_file or None,
+        "cookie_file_exists": cookie_file_exists,
+        "cookie_file_size_bytes": cookie_file_size,
+        "INSTAGRAM_COOKIES_env_set": cookie_env_set,
+        "INSTAGRAM_COOKIES_FILE_env_set": cookie_file_env_set,
+    })
 
 
 @app.route("/api/download-zip/<job_id>")
