@@ -239,7 +239,7 @@ def start_download():
     urls = []
     for url in raw_urls:
         url = url.strip()
-        if url and ("tiktok.com" in url or "instagram.com" in url):
+        if url and ("tiktok.com" in url or "instagram.com" in url or "youtube.com/shorts" in url or "youtu.be" in url):
             urls.append(url)
 
     if not urls:
@@ -247,7 +247,7 @@ def start_download():
             jsonify(
                 {
                     "error": "No valid URLs found. "
-                    "Make sure each URL contains tiktok.com or instagram.com."
+                    "Make sure each URL contains tiktok.com, instagram.com, or youtube.com/shorts."
                 }
             ),
             400,
