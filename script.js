@@ -35,7 +35,7 @@ function parseUrls(text) {
     return text
         .split(/[\n,]+/)
         .map(u => u.trim())
-        .filter(u => u.length > 0 && (u.includes("tiktok.com") || u.includes("instagram.com") || u.includes("youtube.com/shorts") || u.includes("youtu.be")));
+        .filter(u => u.length > 0 && (u.includes("tiktok.com") || u.includes("instagram.com") || u.includes("youtube.com/shorts") || u.includes("youtu.be") || u.includes("facebook.com") || u.includes("fb.watch")));
 }
 
 function truncate(str, max = 65) {
@@ -106,7 +106,7 @@ downloadBtn.addEventListener("click", async () => {
     const urls = parseUrls(urlsInput.value);
 
     if (urls.length === 0) {
-        showError("Paste at least one TikTok, Instagram, or YouTube Shorts URL to get started.");
+        showError("Paste at least one TikTok, Instagram, YouTube Shorts, or Facebook URL to get started.");
         return;
     }
 
